@@ -1,0 +1,27 @@
+### GET CLIENTES
+GET http://localhost:8080/obras
+
+
+### POST CLIENTES
+POST http://localhost:8080/obras
+Content-Type: application/json
+
+{
+    "nomeAutor": "zezinho",
+    "tituloObra": "todos os cantos da sala redonda",
+    "ano": "1997"
+}
+
+### PUT CLIENTES
+PUT http://localhost:8080/obras
+Content-Type: application/json
+
+{
+    "nomeAutor": "zezinho",
+    "tituloObra": "todos os cantos da sala redonda",
+    "ano": "1997"
+}
+
+### DELETE CLIENTES
+DELETE http://localhost:8080/obras
+Content-Type: application/json

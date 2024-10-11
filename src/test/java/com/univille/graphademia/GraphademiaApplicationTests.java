@@ -1,10 +1,10 @@
-package br.univille.fso2024graphademia;
+package com.univille.graphademia;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Fso2024graphademiaApplicationTests {
+class GraphademiaApplicationTests {
 
 	@Test
 	void contextLoads() {
