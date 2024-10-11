@@ -1,27 +1,49 @@
-### GET CLIENTES
+### GET
 GET http://localhost:8080/obras
 
 
-### POST CLIENTES
+### POST
+POST http://localhost:8080/obras
+Content-Type: application/json
+
+{
+    "nomeAutor": "julinho",
+    "tituloObra": "as tranças do rei careca",
+    "ano": "2015",
+    "isbn": "528065720",
+    "doi": "8749632-24"
+}
+
+###
 POST http://localhost:8080/obras
 Content-Type: application/json
 
 {
     "nomeAutor": "zezinho",
-    "tituloObra": "todos os cantos da sala redonda",
+    "tituloObra": "os 4 cantos da sala redonda",
     "ano": "1997"
 }
 
-### PUT CLIENTES
-PUT http://localhost:8080/obras
+
+
+### PUT
+PUT http://localhost:8080/obras/0
 Content-Type: application/json
 
 {
-    "nomeAutor": "zezinho",
-    "tituloObra": "todos os cantos da sala redonda",
-    "ano": "1997"
+    "nomeAutor": "julinho",
+    "tituloObra": "as tranças do rei careca",
+    "ano": "2015",
+    "isbn": "528065720",
+    "doi": "8749632-24",
+    "citacoes": [
+        {
+            "id": 1
+        }
+    ]
 }
 
-### DELETE CLIENTES
+
+### DELETE 
 DELETE http://localhost:8080/obras
 Content-Type: application/json
