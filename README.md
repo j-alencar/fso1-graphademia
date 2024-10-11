@@ -3,4 +3,4 @@
 - Atualmente os verbos REST estão funcionando, e planejo utilizar da Google Scholar Cite API para uma funcionalidade de pesquisa web junto ao próprio CRUD.
 - Uma interface básica de pesquisa junto ao CRUD para interagir com o ponto acima também é uma possibilidade. (Talvez um CLI?)
 - Posteriormente pode ser usado o Neo4J Bloom (ferramenta de visualização) com a base gerada (meta para o futuro).
-- [Diagrama UML aqui](https://raw.githubusercontent.com/j-alencar/fso1-graphademia/refs/heads/master/uml.png?token=GHSAT0AAAAAACWQJ4WHLY4HMP4WLGCLSEZ2ZYJWQ5A)
+- [Diagrama UML aqui](https://raw.githubusercontent.com/j-alencar/fso1-graphademia/refs/heads/master/uml.png?token=GHSAT0AAAAAACWQJ4WHE5YQIJVWIKU4TL5EZYJXNXA)
