@@ -1,10 +1,13 @@
 package com.univille.graphademia;
 
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.univille.graphademia.api.SemanticScholarAPI;
+import com.univille.graphademia.node.Obra;
+import com.univille.graphademia.service.QueryApiService;
 
 @EnableTransactionManagement
 @EnableNeo4jRepositories
@@ -15,15 +18,19 @@ public class GraphademiaApplication {
 
 		//Métodos pra obra
 		String nomeObra = "Uma proposta de Solução de Mineração de Dados aplicada à Segurança Pública";
-		String idObra = SemanticScholarAPI.procurarObraPorTitulo(nomeObra);
-		SemanticScholarAPI.procurarReferenciasDaObra(idObra);
-		//"TODO: Formatar títulos com acento/cedilha, mostrar de forma tabular p/ confirmar antes do POST";
+		String idObra = QueryApiService.procurarObraPorTitulo(nomeObra);
+
+		Obra obra = new Obra();
+		obra.setPaperId(idObra);
+		List<String> detalhesObra = QueryApiService.procurarDetalhesObra(idObra);
+		obra.setReferences(detalhesObra);
+		
+		System.out.println(obra.getPaperId());
+		System.out.println(obra.getReferences());
 		
 		//Métodos pro autor
-		System.out.println("\n");
-		String nomeAutor = "Edsger Dijkstra";
-		SemanticScholarAPI.procurarAutorPorNome(nomeAutor);
-		//TODO: Mostrar IDs do autor de forma tabular pro usuário identificar, talvez mais dados pra ajudar
+		//String nomeAutor = "Edsger Dijkstra";
+		//SemanticScholarAPI.procurarAutorPorNome(nomeAutor);
 
 		//SpringApplication.run(GraphademiaApplication.class, args);
 	}

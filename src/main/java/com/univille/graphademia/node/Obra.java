@@ -1,6 +1,7 @@
 package com.univille.graphademia.node;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
@@ -11,74 +12,129 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @Node
 public class Obra {
 
-  @Id @GeneratedValue 
-  private Long id;
+    @Id @GeneratedValue 
+    private Long id;
 
-  private String tituloObra;
-  private String nomeAutor;
-  private String ano;          
-  private String doi;   // para artigos, opcional
-  private String isbn;  // para livros, opcional
-  private String url;   // url, opcional
+    private String paperId;
+    private String title;
+    private List<String> authors;
+    private Date publicationDate;
+    private String year;
+    private List<String> externalIds;
+    private String openAccessPdf;
+    private List<String> publicationVenue;
+    private List<String> publicationTypes;
+    private Integer citationCount;
+    private List<String> tldr;
+    private List<String> references;
 
-  // Relacionamento de referência/citação
-  @Relationship(type = "CITA", direction = Relationship.Direction.OUTGOING)
-  private List<Obra> citacoes = new ArrayList<>();
+    //Relacionamento de referências bibliográficas
+    @Relationship(type = "CITA", direction = Relationship.Direction.OUTGOING)
+    private List<Obra> obrasReferenciadas = new ArrayList<>();
 
-  public List<Obra> getCitacoes() {
-    return citacoes;
-  }
+    public List<Obra> getObrasReferenciadas() {
+        return obrasReferenciadas;
+    }
 
-  public void setCitacoes(List<Obra> citacoes) {
-    this.citacoes = citacoes;
-  }
+    public void setObrasReferenciadas(List<Obra> obrasReferenciadas) {
+        this.obrasReferenciadas = obrasReferenciadas;
+    }
 
+    public String getPaperId() {
+        return paperId;
+    }
 
-  public String getTituloObra() {
-    return tituloObra;
-  }
+    public void setPaperId(String paperId) {
+        this.paperId = paperId;
+    }
 
-  public void setTituloObra(String tituloObra) {
-    this.tituloObra = tituloObra;
-  }
+    public String getTitle() {
+        return title;
+    }
 
-  public String getNomeAutor() {
-    return nomeAutor;
-  }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-  public void setNomeAutor(String nomeAutor) {
-    this.nomeAutor = nomeAutor;
-  }
+    public List<String> getAuthors() {
+        return authors;
+    }
 
-  public String getAno() {
-    return ano;
-  }
+    public void setAuthors(List<String> authors) {
+        this.authors = authors;
+    }
 
-  public void setAno(String ano) {
-    this.ano = ano;
-  }
+    public Date getPublicationDate() {
+        return publicationDate;
+    }
 
-  public String getDoi() {
-    return doi;
-  }
+    public void setPublicationDate(Date publicationDate) {
+        this.publicationDate = publicationDate;
+    }
 
-  public void setDoi(String doi) {
-    this.doi = doi;
-  }
+    public String getYear() {
+        return year;
+    }
 
-  public String getIsbn() {
-    return isbn;
-  }
+    public void setYear(String year) {
+        this.year = year;
+    }
 
-  public void setIsbn(String isbn) {
-    this.isbn = isbn;
-  }
+    public List<String> getExternalIds() {
+        return externalIds;
+    }
 
-  public String getUrl() {
-    return url;
-  }
+    public void setExternalIds(List<String> externalIds) {
+        this.externalIds = externalIds;
+    }
 
-  public void setUrl(String url) {
-    this.url = url;
-  }
+    public String getOpenAccessPdf() {
+        return openAccessPdf;
+    }
+
+    public void setOpenAccessPdf(String openAccessPdf) {
+        this.openAccessPdf = openAccessPdf;
+    }
+
+    public List<String> getPublicationVenue() {
+        return publicationVenue;
+    }
+
+    public void setPublicationVenue(List<String> publicationVenue) {
+        this.publicationVenue = publicationVenue;
+    }
+
+    public List<String> getPublicationTypes() {
+        return publicationTypes;
+    }
+
+    public void setPublicationTypes(List<String> publicationTypes) {
+        this.publicationTypes = publicationTypes;
+    }
+
+    public Integer getCitationCount() {
+        return citationCount;
+    }
+
+    public void setCitationCount(Integer citationCount) {
+        this.citationCount = citationCount;
+    }
+
+    public List<String> getTldr() {
+        return tldr;
+    }
+
+    public void setTldr(List<String> tldr) {
+        this.tldr = tldr;
+    }
+
+    public List<String> getReferences() {
+        return references;
+    }
+
+    public void setReferences(List<String> references) {
+        this.references = references;
+    }
 }
+
+
