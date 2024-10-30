@@ -4,13 +4,13 @@ import java.util.List;
 import com.univille.graphademia.node.Obra;
 
 public class RespostaApiService {
-    private List<Obra> dados;
-
-    public List<Obra> getDados() {
-        return dados;
+    private List<Obra> data;  
+    
+    public List<Obra> getData() {
+        return data;
     }
 
-    public void setDados(List<Obra> dados) {
-        this.dados = dados;
+    public void setData(List<Obra> data) {
+        this.data = data;
     }
 }

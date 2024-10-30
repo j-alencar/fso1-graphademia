@@ -1,13 +1,11 @@
 package com.univille.graphademia.node;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Relationship;
 
 @Node
 public class Obra {
@@ -29,16 +27,8 @@ public class Obra {
     private List<String> references;
 
     //Relacionamento de referências bibliográficas
-    @Relationship(type = "CITA", direction = Relationship.Direction.OUTGOING)
-    private List<Obra> obrasReferenciadas = new ArrayList<>();
+    // @Relationship(type = "CITA", direction = Relationship.Direction.OUTGOING)
 
-    public List<Obra> getObrasReferenciadas() {
-        return obrasReferenciadas;
-    }
-
-    public void setObrasReferenciadas(List<Obra> obrasReferenciadas) {
-        this.obrasReferenciadas = obrasReferenciadas;
-    }
 
     public String getPaperId() {
         return paperId;
