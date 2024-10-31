@@ -1,13 +1,11 @@
 package com.univille.graphademia;
 
-import java.util.List;
-
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.univille.graphademia.node.Autor;
 import com.univille.graphademia.node.Obra;
-import com.univille.graphademia.node.Referencia;
 import com.univille.graphademia.service.QueryApiService;
 
 @EnableTransactionManagement
@@ -20,21 +18,16 @@ public class GraphademiaApplication {
 		//Métodos pra obra
 		String nomeObra = "Uma proposta de Solução de Mineração de Dados aplicada à Segurança Pública";
 		String idObra = QueryApiService.procurarObraPorTitulo(nomeObra);
+		
+		Obra obra1 = QueryApiService.procurarDetalhesObra(idObra);
 
-		Obra obra = new Obra();
-		obra.setPaperId(idObra);
-		
-		List<Referencia> referencias = QueryApiService.procurarDetalhesObra(idObra);
-		
-		for (Referencia ref : referencias) {
-			System.out.println(ref.getPaperId());
-			System.out.println(ref.getTitle());
+		for (Autor autor : obra1.getAuthors()){
+			System.out.println(autor.getName());
 		}
 		
 		//Métodos pro autor
-		//String nomeAutor = "Edsger Dijkstra";
-		//SemanticScholarAPI.procurarAutorPorNome(nomeAutor);
-
+		var authors = QueryApiService.procurarAutorPorNome("Edsger Dijkstra");
+		System.out.println(authors);
 		//SpringApplication.run(GraphademiaApplication.class, args);
 	}
 

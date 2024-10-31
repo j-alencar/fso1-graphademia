@@ -1,6 +1,4 @@
 package com.univille.graphademia.node;
-
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
@@ -15,20 +13,19 @@ public class Obra {
 
     private String paperId;
     private String title;
-    private List<String> authors;
-    private Date publicationDate;
-    private String year;
-    private List<String> externalIds;
-    private String openAccessPdf;
-    private List<String> publicationVenue;
-    private List<String> publicationTypes;
-    private Integer citationCount;
-    private List<String> tldr;
-    private List<String> references;
-
+    private Integer year;
+    private String doi;
+    private String publicationVenueName;
+    private String publicationVenueType;
+    private String url;
+    private String tldr; // TLDR text
+    private String publicationTypes;
+    private String publicationDate;
+    private List<Autor> authors;
+    private List<Referencia> references;
+    
     //Relacionamento de referências bibliográficas
     // @Relationship(type = "CITA", direction = Relationship.Direction.OUTGOING)
-
 
     public String getPaperId() {
         return paperId;
@@ -46,85 +43,85 @@ public class Obra {
         this.title = title;
     }
 
-    public List<String> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(List<String> authors) {
-        this.authors = authors;
-    }
-
-    public Date getPublicationDate() {
-        return publicationDate;
-    }
-
-    public void setPublicationDate(Date publicationDate) {
-        this.publicationDate = publicationDate;
-    }
-
-    public String getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
-    public List<String> getExternalIds() {
-        return externalIds;
+    public String getDoi() {
+        return doi;
     }
 
-    public void setExternalIds(List<String> externalIds) {
-        this.externalIds = externalIds;
+    public void setDoi(String doi) {
+        this.doi = doi;
     }
 
-    public String getOpenAccessPdf() {
-        return openAccessPdf;
+    public String getPublicationVenueName() {
+        return publicationVenueName;
     }
 
-    public void setOpenAccessPdf(String openAccessPdf) {
-        this.openAccessPdf = openAccessPdf;
+    public void setPublicationVenueName(String publicationVenueName) {
+        this.publicationVenueName = publicationVenueName;
     }
 
-    public List<String> getPublicationVenue() {
-        return publicationVenue;
+    public String getPublicationVenueType() {
+        return publicationVenueType;
     }
 
-    public void setPublicationVenue(List<String> publicationVenue) {
-        this.publicationVenue = publicationVenue;
+    public void setPublicationVenueType(String publicationVenueType) {
+        this.publicationVenueType = publicationVenueType;
     }
 
-    public List<String> getPublicationTypes() {
-        return publicationTypes;
+    public String getUrl() {
+        return url;
     }
 
-    public void setPublicationTypes(List<String> publicationTypes) {
-        this.publicationTypes = publicationTypes;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public Integer getCitationCount() {
-        return citationCount;
-    }
-
-    public void setCitationCount(Integer citationCount) {
-        this.citationCount = citationCount;
-    }
-
-    public List<String> getTldr() {
+    public String getTldr() {
         return tldr;
     }
 
-    public void setTldr(List<String> tldr) {
+    public void setTldr(String tldr) {
         this.tldr = tldr;
     }
 
-    public List<String> getReferences() {
+    public String getPublicationTypes() {
+        return publicationTypes;
+    }
+
+    public void setPublicationTypes(String publicationTypes) {
+        this.publicationTypes = publicationTypes;
+    }
+
+    public String getPublicationDate() {
+        return publicationDate;
+    }
+
+    public void setPublicationDate(String publicationDate) {
+        this.publicationDate = publicationDate;
+    }
+
+    public List<Autor> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<Autor> authors) {
+        this.authors = authors;
+    }
+
+    public List<Referencia> getReferences() {
         return references;
     }
 
-    public void setReferences(List<String> references) {
+    public void setReferences(List<Referencia> references) {
         this.references = references;
     }
+    
+        
 }
-
-
