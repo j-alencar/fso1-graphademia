@@ -7,10 +7,10 @@ import org.springframework.data.neo4j.core.schema.Node;
 
 @Node
 public class Obra {
-
+    
     @Id @GeneratedValue 
     private Long id;
-
+    
     private String paperId;
     private String title;
     private Integer year;
@@ -18,15 +18,22 @@ public class Obra {
     private String publicationVenueName;
     private String publicationVenueType;
     private String url;
-    private String tldr; // TLDR text
+    private String tldr;
     private String publicationTypes;
     private String publicationDate;
     private List<Autor> authors;
-    private List<Referencia> references;
-    
-    //Relacionamento de referências bibliográficas
+    private List<Referencia> referencias;
+            
     // @Relationship(type = "CITA", direction = Relationship.Direction.OUTGOING)
+    
+    public Obra() {
+    }
 
+    public Obra(Referencia referencia) {
+        this.paperId = referencia.getPaperId();
+        this.title = referencia.getTitle();
+    }
+    
     public String getPaperId() {
         return paperId;
     }
@@ -115,13 +122,12 @@ public class Obra {
         this.authors = authors;
     }
 
-    public List<Referencia> getReferences() {
-        return references;
+    public List<Referencia> getReferencias() {
+        return referencias;
     }
 
-    public void setReferences(List<Referencia> references) {
-        this.references = references;
+    public void setReferencias(List<Referencia> referencias) {
+        this.referencias = referencias;
     }
-    
-        
-}
+
+}    

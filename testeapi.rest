@@ -15,15 +15,12 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8080/obras
+POST https://api.semanticscholar.org/graph/v1/paper/batch?fields=title,isOpenAccess,openAccessPdf,authors
 Content-Type: application/json
 
 {
-    "nomeAutor": "zezinho",
-    "tituloObra": "os 4 cantos da sala redonda",
-    "ano": "1997"
+    "ids":["649def34f8be52c8b66281af98ae884c09aef38b", "ARXIV:2106.15928"]
 }
-
 
 
 ### PUT
