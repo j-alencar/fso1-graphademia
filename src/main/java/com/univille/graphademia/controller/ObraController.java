@@ -27,9 +27,4 @@ public class ObraController {
 //         return obraService.findAll();
 //     }
 
-//     @GetMapping("/autor/{nomeAutor}")
-//     public List<Obra> getObrasByAutor(@PathVariable String nomeAutor) {
-//         return obraService.findByNomeAutor(nomeAutor);
-//     }
-
 }

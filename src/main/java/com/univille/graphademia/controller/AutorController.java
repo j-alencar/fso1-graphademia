@@ -27,9 +27,4 @@ public class AutorController {
 //         return autorService.findAll();
 //     }
 
-//     @GetMapping("/autor/{nomeAutor}")
-//     public List<Autor> getObrasByAutor(@PathVariable String nomeAutor) {
-//         return autorService.findByNomeAutor(nomeAutor);
-//     }
-
 }
