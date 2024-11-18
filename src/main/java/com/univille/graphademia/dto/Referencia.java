@@ -1,8 +1,13 @@
-package com.univille.graphademia.node;
+package com.univille.graphademia.dto;
+
+import org.springframework.data.annotation.Transient;
 
 public class Referencia {
-    private String paperId;
-    private String title;
+    
+    @Transient
+    private final String paperId;
+    @Transient
+    private final String title;
 
     public Referencia(String paperId, String title) {
         this.paperId = paperId;

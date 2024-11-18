@@ -1,15 +1,20 @@
 package com.univille.graphademia.node;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
+
+import com.univille.graphademia.dto.Referencia;
 
 @Node
-public class Obra {
-    
+
+public class Obra {    
     @Id @GeneratedValue 
-    private Long id;
+    private Long uuid;
     
     private String paperId;
     private String title;
@@ -21,11 +26,16 @@ public class Obra {
     private String tldr;
     private String publicationTypes;
     private String publicationDate;
+
+    @Transient
     private List<Autor> authors;
+
+    @Transient
     private List<Referencia> referencias;
-            
-    // @Relationship(type = "CITA", direction = Relationship.Direction.OUTGOING)
-    
+
+    @Relationship(type = "CITA")
+    private List<Obra> obrasReferenciadas;
+                
     public Obra() {
     }
 
@@ -33,7 +43,25 @@ public class Obra {
         this.paperId = referencia.getPaperId();
         this.title = referencia.getTitle();
     }
-    
+
+    public void gerarObrasAPartirDeReferencia(List<Referencia> listaReferencias) {
+        if (listaReferencias == null || listaReferencias.isEmpty()) {
+            return;
+        }
+        
+        if (obrasReferenciadas == null) {
+            obrasReferenciadas = new ArrayList<>(); 
+        }
+
+        for (Referencia referencia : listaReferencias) {
+            if (referencia.getPaperId() != null && referencia.getTitle() != null) { 
+
+                Obra obraAPartirDeReferencia = new Obra(referencia);
+                obrasReferenciadas.add(obraAPartirDeReferencia);
+            }
+        }
+    }
+
     public String getPaperId() {
         return paperId;
     }
@@ -125,9 +153,17 @@ public class Obra {
     public List<Referencia> getReferencias() {
         return referencias;
     }
-
+    
     public void setReferencias(List<Referencia> referencias) {
         this.referencias = referencias;
+    }
+
+    public List<Obra> getObrasReferenciadas() {
+        return obrasReferenciadas;
+    }
+
+    public void setObrasReferenciadas(List<Obra> obrasReferenciadas) {
+        this.obrasReferenciadas = obrasReferenciadas;
     }
 
 }    

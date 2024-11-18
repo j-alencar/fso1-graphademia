@@ -1,5 +1,4 @@
 package com.univille.graphademia.service;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,15 +12,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.univille.graphademia.dto.Referencia;
 import com.univille.graphademia.node.Autor;
 import com.univille.graphademia.node.Obra;
-import com.univille.graphademia.node.Referencia;
 
+@Service
 public class QueryApiService {
 
     public static int maxRetries = 10;
@@ -53,8 +55,8 @@ public class QueryApiService {
                     case HttpURLConnection.HTTP_OK -> {
                         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                         StringBuilder response = new StringBuilder();
+                        
                         String inputLine;
-
                         while ((inputLine = in.readLine()) != null) {
                             response.append(inputLine);
                         }
@@ -117,8 +119,8 @@ public class QueryApiService {
                     case HttpURLConnection.HTTP_OK -> {
                         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                         StringBuilder response = new StringBuilder();
-                        String inputLine;
 
+                        String inputLine;
                         while ((inputLine = in.readLine()) != null) {
                             response.append(inputLine);
                         }
@@ -186,6 +188,7 @@ public class QueryApiService {
                                 listaReferencias.add(new Referencia(refPaperId, refTitle));
                             }
                             obra.setReferencias(listaReferencias);
+                            obra.gerarObrasAPartirDeReferencia(listaReferencias);
                         }
 
                         return obra;
@@ -193,7 +196,9 @@ public class QueryApiService {
                     case 429 -> {
                         System.out.println(msg429);
                         retryCount++;
+
                         String retryAfter = connection.getHeaderField("Retry-After");
+
                         if (retryAfter != null) {
                             tempoDeEspera = Integer.parseInt(retryAfter) * 1000;
                         } else {
@@ -279,9 +284,8 @@ public class QueryApiService {
 
                             if (obra != null) {
 
-                                if (jsonResponse.has("year") && jsonResponse.get("year").isJsonPrimitive()) {
-                                    obra.setYear(jsonResponse.get("year").getAsInt());
-                                }
+                                obra.setTitle(jsonResponse.has("title") ? jsonResponse.get("title").getAsString() : null);
+                                obra.setYear(jsonResponse.has("year") ? jsonResponse.get("year").getAsInt() : null);
 
                                 if (jsonResponse.has("externalIds") && jsonResponse.get("externalIds").isJsonObject()
                                 && jsonResponse.getAsJsonObject("externalIds").has("DOI")) {
@@ -314,8 +318,6 @@ public class QueryApiService {
                                     obra.setPublicationTypes(String.join(", ", types));
                                 }
 
-                                //TODO: setters de objetos lista
-
                                 if (jsonResponse.get("authors") != null && jsonResponse.get("authors").isJsonArray()) {
                                     List<Autor> autores = new ArrayList<>();
                                     for (JsonElement authorElement : jsonResponse.getAsJsonArray("authors")) {
@@ -331,6 +333,7 @@ public class QueryApiService {
 
                                 if (jsonResponse.get("references") != null && jsonResponse.get("references").isJsonArray()) {
                                     List<Referencia> listaReferencias = new ArrayList<>();
+                                    
                                     for (JsonElement reference : jsonResponse.getAsJsonArray("references")) {
                                         JsonObject refObject = reference.getAsJsonObject();
                                         String refPaperId = refObject.has("paperId") && !refObject.get("paperId").isJsonNull()
@@ -340,6 +343,7 @@ public class QueryApiService {
                                         listaReferencias.add(new Referencia(refPaperId, refTitle));
                                     }
                                     obra.setReferencias(listaReferencias);
+                                    obra.gerarObrasAPartirDeReferencia(listaReferencias);
                                 }
                             }
                         }
@@ -348,7 +352,9 @@ public class QueryApiService {
                     case 429 -> {
                         System.out.println(msg429);
                         retryCount++;
+
                         String retryAfter = connection.getHeaderField("Retry-After");
+
                         if (retryAfter != null) {
                             tempoDeEspera = Integer.parseInt(retryAfter) * 1000;
                         } else {
@@ -394,6 +400,7 @@ public class QueryApiService {
                     case HttpURLConnection.HTTP_OK -> {
                         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                         StringBuilder response = new StringBuilder();
+
                         String inputLine;
                         while ((inputLine = in.readLine()) != null) {
                             response.append(inputLine);
@@ -417,7 +424,9 @@ public class QueryApiService {
                     case 429 -> {
                         System.out.println(msg429);
                         retryCount++;
+
                         String retryAfter = connection.getHeaderField("Retry-After");
+
                         if (retryAfter != null) {
                             tempoDeEspera = Integer.parseInt(retryAfter) * 1000;
                         } else {
