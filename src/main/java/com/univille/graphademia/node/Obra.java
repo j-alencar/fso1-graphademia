@@ -14,7 +14,7 @@ import com.univille.graphademia.dto.Referencia;
 
 public class Obra {    
     @Id @GeneratedValue 
-    private Long uuid;
+    private Integer uuid;
     
     private String paperId;
     private String title;

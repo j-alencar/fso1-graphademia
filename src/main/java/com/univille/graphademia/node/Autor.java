@@ -12,13 +12,19 @@ public class Autor {
 
     @Id
     @GeneratedValue
-    private Long uuid;
+    private Integer uuid;
 
     private String authorId;
     private String name;
+    private String dblp;
+    private String orcid;
+    private Integer hindex;
+
+    public Autor(){
+    };
 
     @Relationship(type = "ESCREVE")
-    private List<Obra> obras = new ArrayList<>(); // Inicializar aqui
+    private List<Obra> obras = new ArrayList<>(); // Inicializar obras aqui
 
     public Autor(String authorId, String name) {
         this.authorId = authorId;
@@ -32,5 +38,45 @@ public class Autor {
 
     public void setObras(List<Obra> obras) {
         this.obras = obras;
+    }
+
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDblp() {
+        return dblp;
+    }
+
+    public void setDblp(String dblp) {
+        this.dblp = dblp;
+    }
+
+    public String getOrcid() {
+        return orcid;
+    }
+
+    public void setOrcid(String orcid) {
+        this.orcid = orcid;
+    }
+
+    public Integer getHindex() {
+        return hindex;
+    }
+
+    public void setHindex(Integer hindex) {
+        this.hindex = hindex;
     }
 }

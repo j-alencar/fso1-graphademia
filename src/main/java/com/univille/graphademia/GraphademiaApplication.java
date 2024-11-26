@@ -35,8 +35,8 @@ public class GraphademiaApplication {
 
         List<Obra> parzinhoDetalhes = QueryApiService.procurarDetalhesMultiplasObras(parzinhoObra);
 
-        for (Obra obra : parzinhoDetalhes) {
-            obraController.criarObra(obra);
-        }
+        // for (Obra obra : parzinhoDetalhes) {
+        //     obraController.criarObra(obra);
+        // }
     }
 }
