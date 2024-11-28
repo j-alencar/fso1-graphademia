@@ -3,9 +3,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import com.univille.graphademia.node.Autor;
+import com.univille.graphademia.node.Area;
 
-@RepositoryRestResource(collectionResourceRel = "autores", path = "autores")
-public interface AutorRepository extends PagingAndSortingRepository<Autor, Long>, CrudRepository<Autor, Long> {
-    
+@RepositoryRestResource(collectionResourceRel = "areas", path = "areas")
+public interface AreaRepository extends PagingAndSortingRepository<Area, Long>, CrudRepository<Area, Long> {
+
 };

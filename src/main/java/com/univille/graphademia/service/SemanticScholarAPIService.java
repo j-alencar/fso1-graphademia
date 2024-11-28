@@ -19,6 +19,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.univille.graphademia.dto.Referencia;
+import com.univille.graphademia.node.Area;
 import com.univille.graphademia.node.Autor;
 import com.univille.graphademia.node.Obra;
 
@@ -29,58 +30,8 @@ public class SemanticScholarAPIService {
     public static int retryCount = 0;
     public static int tempoDeEspera = 5000;
     public static String msgMaxRetries = "Retries chegaram ao máximo. Retornando null.";
-    public static String sufixoCamposObra = "?fields=title,authors,references,openAccessPdf,externalIds,year,publicationDate,publicationVenue,publicationTypes,tldr,citationCount";
+    public static String sufixoCamposObra = "?fields=title,authors,references,openAccessPdf,externalIds,year,publicationDate,publicationVenue,publicationTypes,tldr,citationCount,fieldsOfStudy";
     public static String sufixoCamposAutor = "&fields=name,papers,externalIds,hIndex";
-
-    private static String getJsonString(JsonObject jsonObject, String fieldName) {
-        return jsonObject.has(fieldName) ? jsonObject.get(fieldName).getAsString() : null;
-    }
-    
-    private static Integer getJsonInt(JsonObject jsonObject, String fieldName) {
-        return jsonObject.has(fieldName) ? jsonObject.get(fieldName).getAsInt() : null;
-    };
-
-    private static void popularCamposObra(Obra obra, JsonObject jsonResponse) {
-        obra.setPaperId(getJsonString(jsonResponse, "paperId"));
-        obra.setTitle(getJsonString(jsonResponse, "title"));
-        obra.setYear(getJsonInt(jsonResponse, "year"));
-    
-        JsonObject externalIds = jsonResponse.getAsJsonObject("externalIds");
-        if (externalIds != null) {
-            obra.setDoi(getJsonString(externalIds, "DOI"));
-        }
-    
-        JsonObject publicationVenue = jsonResponse.getAsJsonObject("publicationVenue");
-        if (publicationVenue != null) {
-            obra.setPublicationVenueName(getJsonString(publicationVenue, "name"));
-            obra.setPublicationVenueType(getJsonString(publicationVenue, "type"));
-        }
-    
-        JsonObject openAccessPdf = jsonResponse.getAsJsonObject("openAccessPdf");
-        if (openAccessPdf != null) {
-            obra.setUrl(getJsonString(openAccessPdf, "url"));
-        }
-    
-        JsonObject tldr = jsonResponse.getAsJsonObject("tldr");
-        if (tldr != null) {
-            obra.setTldr(getJsonString(tldr, "text"));
-        }
-    };
-
-    private static Autor popularCamposAutor(JsonObject jsonDataIndex) {
-        Autor autor = new Autor();
-
-        autor.setAuthorId(getJsonString(jsonDataIndex, "authorId"));
-        autor.setName(getJsonString(jsonDataIndex, "name"));
-        autor.setHindex(getJsonInt(jsonDataIndex, "hIndex"));
-    
-        JsonObject externalIds = jsonDataIndex.getAsJsonObject("externalIds");
-        if (externalIds != null) {
-            autor.setDblp(getJsonString(externalIds, "dblp"));
-            autor.setOrcid(getJsonString(externalIds, "orcid"));
-        }
-        return autor;
-    };
     
     private static JsonObject fetchJsonResponse(String urlString, String metodo, String payload) throws IOException {
         @SuppressWarnings("deprecation")
@@ -120,7 +71,43 @@ public class SemanticScholarAPIService {
             }
             default -> throw new IOException("Erro HTTP: " + responseCode);
         }
-    }    
+    };
+
+    private static String getJsonString(JsonObject jsonObject, String fieldName) {
+        return jsonObject.has(fieldName) ? jsonObject.get(fieldName).getAsString() : null;
+    };
+    
+    private static Integer getJsonInt(JsonObject jsonObject, String fieldName) {
+        return jsonObject.has(fieldName) ? jsonObject.get(fieldName).getAsInt() : null;
+    };
+
+    private static Obra popularCamposObra(Obra obra, JsonObject jsonResponse) {
+        obra.setPaperId(getJsonString(jsonResponse, "paperId"));
+        obra.setTitle(getJsonString(jsonResponse, "title"));
+        obra.setYear(getJsonInt(jsonResponse, "year"));
+    
+        JsonObject externalIds = jsonResponse.getAsJsonObject("externalIds");
+        if (externalIds != null) {
+            obra.setDoi(getJsonString(externalIds, "DOI"));
+        }
+    
+        JsonObject publicationVenue = jsonResponse.getAsJsonObject("publicationVenue");
+        if (publicationVenue != null) {
+            obra.setPublicationVenueName(getJsonString(publicationVenue, "name"));
+            obra.setPublicationVenueType(getJsonString(publicationVenue, "type"));
+        }
+    
+        JsonObject openAccessPdf = jsonResponse.getAsJsonObject("openAccessPdf");
+        if (openAccessPdf != null) {
+            obra.setUrl(getJsonString(openAccessPdf, "url"));
+        }
+    
+        JsonObject tldr = jsonResponse.getAsJsonObject("tldr");
+        if (tldr != null) {
+            obra.setTldr(getJsonString(tldr, "text"));
+        }
+        return obra;
+    };
 
     public static Obra deserializarJsonObra(JsonObject jsonResponse) {
         Obra obra = new Obra();
@@ -158,20 +145,20 @@ public class SemanticScholarAPIService {
             }
             obra.setReferencias(listaReferencias);
         }
+
+        if (jsonResponse.has("fieldsOfStudy") && jsonResponse.get("fieldsOfStudy").isJsonArray()) {
+            List<Area> areas = new ArrayList<>();
+            for (JsonElement reference : jsonResponse.getAsJsonArray("fieldsOfStudy")) {
+                JsonObject refObject = reference.getAsJsonObject();
+                areas.add(new Area(refObject.getAsString()));
+            }
+            obra.setAreas(areas);
+        }
+
         return obra;
     };
-
-    public static List<Autor> deserializarJsonAutores(JsonObject jsonResponse) {
-        List<Autor> autores = new ArrayList<>();
-
-        for (int i = 0; i < jsonResponse.get("data").getAsJsonArray().size(); i++) {
-            Autor autor = popularCamposAutor(jsonResponse.get("data").getAsJsonArray().get(i).getAsJsonObject());
-            autores.add(autor);
-        }
-        return autores;
-    };
     
-    public static Obra procurarObraPorTitulo(String titulo) {
+    public static Obra gerarObraPorTitulo(String titulo) {
         String urlBase = "https://api.semanticscholar.org/graph/v1/paper/search/match?query=";
 
         while (retryCount < maxRetries) {
@@ -190,7 +177,7 @@ public class SemanticScholarAPIService {
         return null;
     };
 
-    public static Obra procurarObraPorId(String id) {
+    public static Obra gerarObraPorId(String id) {
         String urlBase = "https://api.semanticscholar.org/graph/v1/paper/";     
 
         while (retryCount < maxRetries) {
@@ -208,7 +195,7 @@ public class SemanticScholarAPIService {
         return null;
     };
 
-    public static List<Obra> procurarDetalhesMultiplasObras(List<Obra> listaObras) {
+    public static List<Obra> gerarDetalhesMultiplasObras(List<Obra> listaObras) {
         String urlBase = "https://api.semanticscholar.org/graph/v1/paper/batch?";        
     
         List<String> listaIds = new ArrayList<>();
@@ -236,6 +223,8 @@ public class SemanticScholarAPIService {
     
                 // Pegar resposta e atualizar POJO
                 JsonArray jsonResponseArray = jsonResponse.getAsJsonArray("papers");
+
+                List<Obra> obras = new ArrayList<>();
     
                 for (int i = 0; i < listaIds.size(); i++) {
                     JsonObject jsonObraResponse = jsonResponseArray.get(i).getAsJsonObject();
@@ -244,9 +233,12 @@ public class SemanticScholarAPIService {
                     if (obra != null) {
                         popularCamposObra(obra, jsonObraResponse);
                         obra.gerarObrasAPartirDeReferencia(obra.getReferencias());
+                        obras.add(obra);
                     }
                 }
-                return listaObras;
+
+                return obras;
+
             } catch (IOException e) {
                 System.out.println("Erro: " + e.getMessage());
                 retryCount++;
@@ -255,8 +247,33 @@ public class SemanticScholarAPIService {
         System.out.println(msgMaxRetries);
         return null;
     };
+
+    private static Autor popularCamposAutor(JsonObject jsonDataIndex) {
+        Autor autor = new Autor();
+
+        autor.setAuthorId(getJsonString(jsonDataIndex, "authorId"));
+        autor.setName(getJsonString(jsonDataIndex, "name"));
+        autor.setHindex(getJsonInt(jsonDataIndex, "hIndex"));
     
-    public static List<Autor> procurarAutorPorNome(String nome) {
+        JsonObject externalIds = jsonDataIndex.getAsJsonObject("externalIds");
+        if (externalIds != null) {
+            autor.setDblp(getJsonString(externalIds, "dblp"));
+            autor.setOrcid(getJsonString(externalIds, "orcid"));
+        }
+        return autor;
+    };
+
+    public static List<Autor> deserializarJsonAutores(JsonObject jsonResponse) {
+        List<Autor> autores = new ArrayList<>();
+
+        for (int i = 0; i < jsonResponse.get("data").getAsJsonArray().size(); i++) {
+            Autor autor = popularCamposAutor(jsonResponse.get("data").getAsJsonArray().get(i).getAsJsonObject());
+            autores.add(autor);
+        }
+        return autores;
+    };
+    
+    public static List<Autor> gerarAutorPorNome(String nome) {
         String urlBase = "https://api.semanticscholar.org/graph/v1/author/search?query=";
 
         while (retryCount < maxRetries) {
@@ -273,4 +290,83 @@ public class SemanticScholarAPIService {
         System.out.println(msgMaxRetries);
         return null;
     };
-}
+
+    public static List<Autor> gerarDetalhesMultiplosAutores(List<Autor> listaAutores) {
+        String urlBase = "https://api.semanticscholar.org/graph/v1/author/batch?";        
+
+        List<String> listaIds = new ArrayList<>();
+        Map<String, Autor> autorMap = new HashMap<>();
+        
+        for (Autor autor : listaAutores) {
+            String id = autor.getAuthorId();
+            listaIds.add(id);
+            autorMap.put(id, autor);
+        }
+
+        JsonArray idsArray = new JsonArray();
+        for (String id : listaIds) {
+            idsArray.add(id);
+        }
+
+        JsonObject payload = new JsonObject();
+        payload.add("ids", idsArray);
+
+        while (retryCount < maxRetries) {
+            try {
+                JsonObject jsonResponse = fetchJsonResponse(urlBase + sufixoCamposAutor, "POST", payload.toString());
+
+                // Pegar resposta e atualizar POJO
+                JsonArray jsonResponseArray = jsonResponse.getAsJsonArray("papers");
+
+                List<Autor> autores = new ArrayList<>();
+
+                for (int i = 0; i < listaIds.size(); i++) {
+                    JsonObject jsonObraResponse = jsonResponseArray.get(i).getAsJsonObject();
+                    Autor autor = autorMap.get(listaIds.get(i));
+
+                    if (autor != null) {
+                        autor = popularCamposAutor(jsonObraResponse);
+                        autores.add(autor);
+                    }
+                }
+
+                return autores;
+
+            } catch (IOException e) {
+                System.out.println("Erro: " + e.getMessage());
+                retryCount++;
+            }
+        }
+        System.out.println(msgMaxRetries);
+        return null;
+    };
+
+    public static List<Obra> deserializarJsonRecomendacoes(JsonObject jsonResponse) {
+        List<Obra> recomendacoes = new ArrayList<>();
+
+        for (int i = 0; i < jsonResponse.get("recommendedPapers").getAsJsonArray().size(); i++) {
+            Obra recomendacao = new Obra();
+            recomendacao = popularCamposObra(recomendacao, jsonResponse.get("recommendedPapers").getAsJsonArray().get(i).getAsJsonObject());
+            recomendacoes.add(recomendacao);
+        }
+        return recomendacoes;
+    };
+
+    public static List<Obra> gerarRecomendacoes(Obra obra) {
+        String urlBase = "https://api.semanticscholar.org/recommendations/v1/papers/forpaper/";
+
+        while (retryCount < maxRetries) {
+                    try {
+                        JsonObject jsonResponse = fetchJsonResponse(urlBase + obra.getPaperId() + sufixoCamposAutor, "GET", null);
+                        List<Obra> recomendacoes = deserializarJsonRecomendacoes(jsonResponse);
+                        return recomendacoes;
+                    } catch (IOException e) {
+                        System.out.println("Erro: " + e.getMessage());
+                        retryCount++;
+                    }
+                }
+                System.out.println(msgMaxRetries);
+                return null;
+    }
+
+};

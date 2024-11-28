@@ -6,19 +6,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.univille.graphademia.node.Autor;
-import com.univille.graphademia.service.AutorService;
+import com.univille.graphademia.node.Area;
+import com.univille.graphademia.service.AreaService;
 
 
 @RestController
-@RequestMapping("/autores")
-public class AutorController {
+@RequestMapping("/areas")
+public class AreaController {
 
     @Autowired
-    private AutorService autorService;
+    private AreaService areaService;
 
     @PostMapping
-    public Autor criarAutor(@RequestBody Autor autor) {
-        return autorService.salvarAutor(autor);
+    public Area criarArea(@RequestBody Area area) {
+        return areaService.salvarArea(area);
     }
+
 };

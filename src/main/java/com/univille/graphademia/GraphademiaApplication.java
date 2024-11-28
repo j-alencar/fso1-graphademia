@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.univille.graphademia.controller.ObraController;
 import com.univille.graphademia.node.Obra;
-import com.univille.graphademia.service.QueryApiService;
+import com.univille.graphademia.service.SemanticScholarAPIService;
 
 @EnableTransactionManagement
 @EnableNeo4jRepositories
@@ -33,10 +33,10 @@ public class GraphademiaApplication {
         parzinhoObra.add(obra2);
         parzinhoObra.add(obra3);
 
-        List<Obra> parzinhoDetalhes = QueryApiService.procurarDetalhesMultiplasObras(parzinhoObra);
+        List<Obra> parzinhoDetalhes = SemanticScholarAPIService.gerarDetalhesMultiplasObras(parzinhoObra);
 
-        // for (Obra obra : parzinhoDetalhes) {
-        //     obraController.criarObra(obra);
-        // }
+        for (Obra obra : parzinhoDetalhes) {
+            obraController.criarObra(obra);
+        }
     }
 }

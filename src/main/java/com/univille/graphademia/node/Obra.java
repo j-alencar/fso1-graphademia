@@ -26,12 +26,16 @@ public class Obra {
     private String tldr;
     private String publicationTypes;
     private String publicationDate;
+    private List<Area> fieldsOfStudy;
 
     @Transient
     private List<Autor> authors;
 
     @Transient
     private List<Referencia> referencias;
+
+    @Relationship(type = "RECOMENDA")
+    private List<Obra> recomendacoes;
 
     @Relationship(type = "CITA")
     private List<Obra> obrasReferenciadas;
@@ -166,4 +170,20 @@ public class Obra {
         this.obrasReferenciadas = obrasReferenciadas;
     }
 
-}    
+    public List<Obra> getRecomendacoes() {
+        return recomendacoes;
+    }
+
+    public void setRecomendacoes(List<Obra> recomendacoes) {
+        this.recomendacoes = recomendacoes;
+    }
+
+    public List<Area> getAreas() {
+        return fieldsOfStudy;
+    }
+
+    public void setAreas(List<Area> fieldsOfStudy) {
+        this.fieldsOfStudy = fieldsOfStudy;
+    }
+
+};

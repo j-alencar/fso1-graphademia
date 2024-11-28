@@ -8,6 +8,4 @@ import com.univille.graphademia.node.Obra;
 @RepositoryRestResource(collectionResourceRel = "obras", path = "obras")
 public interface ObraRepository extends PagingAndSortingRepository<Obra, Long>, CrudRepository<Obra, Long> {
 
-  // List<Obra> buscarObraPorTitulo(@Param("title") String title);
-
-}
+};

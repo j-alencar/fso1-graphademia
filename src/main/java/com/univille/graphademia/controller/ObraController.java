@@ -21,10 +21,4 @@ public class ObraController {
     public Obra criarObra(@RequestBody Obra obra) {
         return obraService.salvarObra(obra);
     }
-
-//     @GetMapping
-//     public List<Obra> getAllObras() {
-//         return obraService.findAll();
-//     }
-
-}
+};

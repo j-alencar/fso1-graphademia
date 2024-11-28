@@ -19,14 +19,17 @@ public class ObraService {
 
     public Obra salvarObra(Obra obra) {
         for (Autor autor : obra.getAuthors()) {
+
             if (autor.getObras() == null) {
                 autor.setObras(new ArrayList<>());
             }
+
             autor.getObras().add(obra);
+            
             autorService.salvarAutor(autor);
         }
         return obraRepository.save(obra);
     }
-}
+};
 
 
