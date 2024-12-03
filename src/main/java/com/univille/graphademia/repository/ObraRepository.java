@@ -7,5 +7,5 @@ import com.univille.graphademia.node.Obra;
 
 @RepositoryRestResource(collectionResourceRel = "obras", path = "obras")
 public interface ObraRepository extends PagingAndSortingRepository<Obra, Long>, CrudRepository<Obra, Long> {
-
+    Obra findById(String id);
 };

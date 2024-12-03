@@ -12,7 +12,7 @@ public class Autor {
 
     @Id
     @GeneratedValue
-    private Integer uuid;
+    public Long id;
 
     private String authorId;
     private String name;

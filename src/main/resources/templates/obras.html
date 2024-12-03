@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Obras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        td.truncado {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 500px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Obras</h1>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>O que fazer?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="obra : ${obras}">
+                    <td th:text="${obra.id}"></td>
+                    <td class="truncado" th:text="${obra.title}"></td>
+                    <td>
+                        <form th:action="@{/obras/{id}/gerar-recomendacoes(id=${obra.id})}" method="post" style="display:inline;">
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-info" style="width: 200px;">Gerar Recomendações</button>
+                                
+                                <input type="number" name="limite" class="form-control ms-2" placeholder="Quantas?" required min="1" max="10" style="width: 120px;"/>
+                            </div>
+                        </form>
+                        
+                        <div class="d-flex mt-2">
+                            <a th:href="@{/obras/{id}/editar(id=${obra.id})}" class="btn btn-warning" style="width: auto; margin-right: 10px;">Editar</a>
+                            <form th:action="@{/obras/{id}(id=${obra.id})}" method="post" style="display:inline;">
+                                <button type="button" class="btn btn-danger" th:onclick="'deletarObra(' + ${obra.id} + ')'" >Deletar</button>
+                            </form>                            
+                        </div>
+                    </td>                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="/js/deletarObra.js"></script>
+</body>
+</html>

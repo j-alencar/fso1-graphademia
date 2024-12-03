@@ -9,12 +9,12 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @Node
 public class Area {    
     @Id @GeneratedValue 
-    private Integer uuid;
+    private Long id;
 
     private String nomeArea;
 
-    @Relationship(type = "ENVOLVE", direction = Relationship.Direction.INCOMING)
-    private List<Obra> obras;
+    @Relationship(type = "ABRANGE", direction = Relationship.Direction.OUTGOING)
+    private List<Obra> obras;    
 
     public Area(String nomeArea) {
         this.nomeArea = nomeArea;

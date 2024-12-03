@@ -2,7 +2,9 @@ package com.univille.graphademia.dto;
 
 import org.springframework.data.annotation.Transient;
 
-public class Referencia {
+import com.univille.graphademia.node.Obra;
+
+public class Referencia extends Obra {
     
     @Transient
     private final String paperId;

@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ###
-POST https://api.semanticscholar.org/graph/v1/paper/batch?fields=title,authors,references,openAccessPdf,externalIds,year,publicationDate,publicationVenue,publicationTypes,tldr,citationCount
+POST https://api.semanticscholar.org/graph/v1/paper/batch?fields=title,authors,references,openAccessPdf,externalIds,year,publicationDate,publicationVenue,publicationTypes,tldr,citationCount,fieldsOfStudy
 Content-Type: application/json
 
 {

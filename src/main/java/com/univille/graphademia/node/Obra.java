@@ -14,7 +14,7 @@ import com.univille.graphademia.dto.Referencia;
 
 public class Obra {    
     @Id @GeneratedValue 
-    private Integer uuid;
+    public Long id;
     
     private String paperId;
     private String title;
@@ -26,13 +26,15 @@ public class Obra {
     private String tldr;
     private String publicationTypes;
     private String publicationDate;
-    private List<Area> fieldsOfStudy;
-
+    
     @Transient
     private List<Autor> authors;
 
     @Transient
     private List<Referencia> referencias;
+
+    @Relationship(type = "ABRANGE", direction = Relationship.Direction.INCOMING)
+    private List<Area> fieldsOfStudy;
 
     @Relationship(type = "RECOMENDA")
     private List<Obra> recomendacoes;
@@ -43,28 +45,32 @@ public class Obra {
     public Obra() {
     }
 
-    public Obra(Referencia referencia) {
-        this.paperId = referencia.getPaperId();
-        this.title = referencia.getTitle();
+    public Obra(Obra obra) {
+        this.paperId = obra.getPaperId();
+        this.title = obra.getTitle();
     }
 
-    public void gerarObrasAPartirDeReferencia(List<Referencia> listaReferencias) {
-        if (listaReferencias == null || listaReferencias.isEmpty()) {
+    public void gerarObrasDeObras(List<? extends Object> listaObras) {
+        if (listaObras == null || listaObras.isEmpty()) {
             return;
         }
         
         if (obrasReferenciadas == null) {
             obrasReferenciadas = new ArrayList<>(); 
         }
-
-        for (Referencia referencia : listaReferencias) {
-            if (referencia.getPaperId() != null && referencia.getTitle() != null) { 
-
-                Obra obraAPartirDeReferencia = new Obra(referencia);
-                obrasReferenciadas.add(obraAPartirDeReferencia);
+    
+        if (recomendacoes == null) {
+            recomendacoes = new ArrayList<>(); 
+        }
+    
+        for (Object item : listaObras) {
+            if (item instanceof Referencia referencia && referencia.getPaperId() != null) {
+                obrasReferenciadas.add(new Obra(referencia));
+            } else if (item instanceof Obra recomendacao && recomendacao.getPaperId() != null) {
+                recomendacoes.add(new Obra(recomendacao));
             }
         }
-    }
+    };
 
     public String getPaperId() {
         return paperId;
@@ -170,14 +176,6 @@ public class Obra {
         this.obrasReferenciadas = obrasReferenciadas;
     }
 
-    public List<Obra> getRecomendacoes() {
-        return recomendacoes;
-    }
-
-    public void setRecomendacoes(List<Obra> recomendacoes) {
-        this.recomendacoes = recomendacoes;
-    }
-
     public List<Area> getAreas() {
         return fieldsOfStudy;
     }
@@ -185,5 +183,11 @@ public class Obra {
     public void setAreas(List<Area> fieldsOfStudy) {
         this.fieldsOfStudy = fieldsOfStudy;
     }
+    public List<Obra> getRecomendacoes() {
+        return recomendacoes;
+    }
 
+    public void setRecomendacoes(List<Obra> recomendacoes) {
+        this.recomendacoes = recomendacoes;
+    }
 };

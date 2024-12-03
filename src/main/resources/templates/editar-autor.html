@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Autor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Editar Autor</h1>
+        <form th:action="@{/autores/edit/{id}(id=${autor.id})}" th:object="${autor}" method="post" class="mt-4">
+            <div class="mb-3">
+                <label for="name" class="form-label">Nome</label>
+                <input type="text" id="name" name="name" th:value="${autor.name}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="orcid" class="form-label">ORCID</label>
+                <input type="text" id="orcid" name="orcid" th:value="${autor.orcid}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="dblp" class="form-label">DBLP</label>
+                <input type="text" id="dblp" name="dblp" th:value="${autor.dblp}" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="hindex" class="form-label">H-Index</label>
+                <input type="number" id="hindex" name="hindex" th:value="${autor.hindex}" class="form-control">
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a th:href="@{/autores/visualizar}" class="btn btn-secondary">Cancelar</a>
+                <button type="button" class="btn btn-info" onclick="autoPopular()">Auto Popular</button>
+            </div>
+        </form>
+        <form th:action="@{/autores/edit/{id}/autopopular(id=${autor.id})}" method="post" id="form-auto-pop"></form>
+    </div>
+    <script>
+        function autoPopular() {
+            document.getElementById('form-auto-pop').submit();
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
