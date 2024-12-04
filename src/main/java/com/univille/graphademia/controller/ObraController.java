@@ -66,6 +66,39 @@ public class ObraController {
         }
     }
 
+    @GetMapping("/pesquisa")
+    public String exibirPagPesquisa() {
+        return "pesquisa";
+    }
+
+    @GetMapping("/pesquisa/resultados")
+    @ResponseBody
+    public ResponseEntity<Obra> pesquisarObras(@RequestParam String titulo) {
+        Obra resultado = semanticScholarAPIService.gerarObraPorTitulo(titulo);
+        if (resultado != null) {
+            return ResponseEntity.ok(resultado);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    @PostMapping("/salvar")
+    @ResponseBody
+    public ResponseEntity<?> salvarObraPesquisada(@RequestBody Obra obra) {
+        if (obra == null || obra.getPaperId() == null || obra.getTitle() == null) {
+            return ResponseEntity.badRequest().body("Dados inválidos: 'paperId' e 'title' são obrigatórios.");
+        }
+        
+        try {
+            // Pesquisa mostra apenas alguns atributos, mas botão salvar precisa salva o obj inteiro
+            Obra salva = obraService.salvarObra(obra);
+            
+            return ResponseEntity.ok().body("{\"status\": \"ok\"}"); // Msg de retorno
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"status\": \"error\", \"message\": \"" + e.getMessage() + "\"}");
+        }
+    }
+    
+
     @PostMapping("/{id}/gerar-recomendacoes")
     public String gerarRecomendacoes(@PathVariable Long id, @RequestParam Integer limite, Model model) {
         Obra obra = obraService.buscarPorId(id);
@@ -79,6 +112,3 @@ public class ObraController {
         return "redirect:/obras/visualizar";
     }
 };
-
-
-

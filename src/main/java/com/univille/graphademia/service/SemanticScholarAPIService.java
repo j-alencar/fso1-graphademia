@@ -31,12 +31,11 @@ public class SemanticScholarAPIService {
     public static int retryCount = 0;
     public static int tempoDeEspera = 5000;
     public static String msgMaxRetries = "Retries chegaram ao máximo. Retornando null.";
-    public static String sufixoCamposObra = "?fields=title,authors,references,openAccessPdf,externalIds,year,publicationDate,publicationVenue,publicationTypes,tldr,citationCount,fieldsOfStudy";
+    public static String sufixoCamposObra = "fields=title,authors,references,openAccessPdf,externalIds,year,publicationDate,publicationVenue,publicationTypes,tldr,citationCount,fieldsOfStudy";
     public static String sufixoCamposObraRecomendada = "?fields=title,authors,openAccessPdf,externalIds,year,publicationDate,publicationVenue,publicationTypes,citationCount,fieldsOfStudy";    
     public static String sufixoCamposAutor = "?fields=name,papers,externalIds,hIndex";
     
     private static JsonElement buscarRespostaJson(String urlString, String metodo, String payload) throws IOException {
-        @SuppressWarnings("deprecation")
         HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
         connection.setRequestMethod(metodo);
         connection.setRequestProperty("Accept", "application/json");
@@ -210,8 +209,8 @@ public class SemanticScholarAPIService {
         while (retryCount < maxRetries) {
             try {
                 String encodedNome = URLEncoder.encode(titulo, StandardCharsets.UTF_8.toString());
-                JsonObject respostaJson = buscarRespostaJson(urlBase + encodedNome + sufixoCamposObra, "GET", null).getAsJsonObject();
-                Obra obra = deserializarJsonObra(new Obra(), respostaJson);
+                JsonObject respostaJson = buscarRespostaJson(urlBase + encodedNome + "&" + sufixoCamposObra, "GET", null).getAsJsonObject();
+                Obra obra = deserializarJsonObra(new Obra(), respostaJson.get("data").getAsJsonArray().get(0).getAsJsonObject());
                 obra.gerarObrasDeObras(obra.getReferencias());
                 return obra;
             } catch (IOException e) {
@@ -228,7 +227,7 @@ public class SemanticScholarAPIService {
 
         while (retryCount < maxRetries) {
             try {
-                JsonObject respostaJson = buscarRespostaJson(urlBase + id + sufixoCamposObra, "GET", null).getAsJsonObject();
+                JsonObject respostaJson = buscarRespostaJson(urlBase + id + "&" + sufixoCamposObra, "GET", null).getAsJsonObject();
                 Obra obra = deserializarJsonObra(new Obra(), respostaJson);
                 obra.gerarObrasDeObras(obra.getReferencias());
                 return obra;
@@ -265,7 +264,7 @@ public class SemanticScholarAPIService {
     
         while (retryCount < maxRetries) {
             try {
-                JsonElement jsonResponseElement = buscarRespostaJson(urlBase + sufixoCamposObra, "POST", payload.toString());
+                JsonElement jsonResponseElement = buscarRespostaJson(urlBase + "?" + sufixoCamposObra, "POST", payload.toString());
                 JsonArray jsonResponseArray = jsonResponseElement.getAsJsonArray();
             
                 List<Obra> obras = new ArrayList<>();
