@@ -203,16 +203,24 @@ public class SemanticScholarAPIService {
         return obra;
     };
     
-    public static Obra gerarObraPorTitulo(String titulo) {
-        String urlBase = "https://api.semanticscholar.org/graph/v1/paper/search/match?query=";
-
+    public static List<Obra> gerarObraPorTitulo(String titulo) {
+        String urlBase = "https://api.semanticscholar.org/graph/v1/paper/search?query=";
+        List<Obra> obras = new ArrayList<>();
+    
         while (retryCount < maxRetries) {
             try {
                 String encodedNome = URLEncoder.encode(titulo, StandardCharsets.UTF_8.toString());
                 JsonObject respostaJson = buscarRespostaJson(urlBase + encodedNome + "&" + sufixoCamposObra, "GET", null).getAsJsonObject();
-                Obra obra = deserializarJsonObra(new Obra(), respostaJson.get("data").getAsJsonArray().get(0).getAsJsonObject());
-                obra.gerarObrasDeObras(obra.getReferencias());
-                return obra;
+    
+                // Iterar resultados
+                JsonArray dataArray = respostaJson.get("data").getAsJsonArray();
+                for (int i = 0; i < dataArray.size(); i++) {
+                    // Deserializar
+                    Obra obra = deserializarJsonObra(new Obra(), dataArray.get(i).getAsJsonObject());
+                    obra.gerarObrasDeObras(obra.getReferencias());
+                    obras.add(obra);
+                }
+                return obras;
             } catch (IOException e) {
                 System.out.println(e.getMessage());
                 retryCount++;

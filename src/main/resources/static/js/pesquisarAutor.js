@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const titulo = document.getElementById('titulo').value;
         
-        fetch(`/obras/pesquisar-obra/resultados?titulo=${titulo}`, {
+        fetch(`/autors/pesquisar-autor/resultados?titulo=${titulo}`, {
             method: 'GET' 
         })
         .then(response => response.json())
@@ -12,15 +12,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data && Array.isArray(data)) {
                 let resultHtml = '<h2>Resultados</h2>';
                 
-                data.forEach(obra => {
+                data.forEach(autor => {
                     resultHtml += `
                         <div>
-                            <p><strong>Paper ID:</strong> ${obra.paperId}</p>
-                            <p><strong>Título:</strong> ${obra.title}</p>
-                            <p><strong>DOI:</strong> ${obra.doi}</p>
-                            <p><strong>Ano:</strong> ${obra.year}</p>
-                            <p><strong>TLDR:</strong> ${obra.tldr}</p>
-                            <button data-obra='${encodeURIComponent(JSON.stringify(obra))}' onclick="salvarObra(this)">Salvar</button>
+                            <p><strong>authorId:</strong> ${autor.authorId}</p>
+                            <p><strong>Nome:</strong> ${autor.nome}</p>
+                            <p><strong>DBLP:</strong> ${autor.dblp}</p>
+                            <p><strong>ORCID:</strong> ${autor.orcid}</p>
+                            <p><strong>H-Index:</strong> ${autor.hindex}</p>
+                            <button data-autor='${encodeURIComponent(JSON.stringify(autor))}' onclick="salvarAutor(this)">Salvar</button>
                         </div>
                     `;
                 });
@@ -32,47 +32,47 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Erro:', error);
-            alert("Erro ao pesquisar a obra.");
+            alert("Erro ao pesquisar o autor.");
         });
     });
 });
 
-function salvarObra(button) {
+function salvarAutor(button) {
     // Busca o objeto inteiro
-    const obraData = decodeURIComponent(button.getAttribute('data-obra'));
+    const autorData = decodeURIComponent(button.getAttribute('data-autor'));
     
-    console.log("Obra data:", obraData);
+    console.log("autor data:", autorData);
     
-    if (!obraData) {
-        alert("Dados da obra não encontrados.");
+    if (!autorData) {
+        alert("Dados do autor não encontrados.");
         return;
     }
 
     try {
-        const obra = JSON.parse(obraData);
+        const autor = JSON.parse(autorData);
 
         // Envia pro servidor db
-        fetch('/obras/salvar', {
+        fetch('/autores/salvar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(obra)
+            body: JSON.stringify(autor)
         })
         .then(response => response.json()) 
         .then(data => {
             if (data.status === 'ok') {
-                alert("Obra salva com sucesso!");
+                alert("Autor salvo com sucesso!");
             } else {
-                alert("Erro ao salvar a obra."); 
+                alert("Erro ao salvar o autor."); 
             }
         })
         .catch(error => {
             console.error('Erro:', error);
-            alert("Erro ao salvar a obra.");
+            alert("Erro ao salvar o autor.");
         });
     } catch (error) {
         console.error("Erro ao parsear o JSON:", error);
-        alert("Erro ao salvar a obra.");
+        alert("Erro ao salvar o autor.");
     }
 }

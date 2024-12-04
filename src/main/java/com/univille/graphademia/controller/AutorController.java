@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.univille.graphademia.node.Autor;
@@ -31,6 +32,9 @@ public class AutorController {
 
     @Autowired
     private AutorService autorService;
+
+    @Autowired
+    private SemanticScholarAPIService semanticScholarAPIService;
 
     @GetMapping("/visualizar")
     public String visualizarAutores(Model model) {
@@ -69,6 +73,39 @@ public class AutorController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Autor não encontrado!");
         }
     }
+
+    @GetMapping("/pesquisar-autores")
+    public String exibirPagPesquisa() {
+        return "pesquisar-autores";
+    }
+
+    @GetMapping("/autores/pesquisar-autores/resultados")
+    @ResponseBody
+    public ResponseEntity<?> pesquisarAutores(@RequestParam String nome) {
+        List<Autor> resultados = semanticScholarAPIService.gerarAutorPorNome(nome);
+        if (resultados != null && !resultados.isEmpty()) {
+            return ResponseEntity.ok(resultados);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum autor encontrado para o nome especificado.");
+    }
+
+    @PostMapping("/autores/salvar")
+    @ResponseBody
+    public ResponseEntity<?> salvarAutorPesquisado(@RequestBody Autor autor) {
+    if (autor == null || autor.getAuthorId() == null || autor.getName() == null) {
+        return ResponseEntity.badRequest().body("Dados inválidos: 'authorId' e 'name' são obrigatórios.");
+    }
+    
+    try {
+        // Save the Autor object
+        Autor salvo = autorService.salvarAutor(autor); // Assume this service method exists
+        return ResponseEntity.ok().body("{\"status\": \"ok\"}"); // Success message
+        } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"status\": \"error\", \"message\": \"" + e.getMessage() + "\"}");
+        }
+    }
+
+
 
     @PostMapping("/edit/{id}/autopopular")
     public String autoPopularCamposAutor(@PathVariable Long id, Model model) {

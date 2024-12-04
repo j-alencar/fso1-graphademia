@@ -66,20 +66,21 @@ public class ObraController {
         }
     }
 
-    @GetMapping("/pesquisa")
+    @GetMapping("/pesquisar-obra")
     public String exibirPagPesquisa() {
-        return "pesquisa";
+        return "pesquisar-obra";
     }
 
-    @GetMapping("/pesquisa/resultados")
+    @GetMapping("/pesquisar-obra/resultados")
     @ResponseBody
-    public ResponseEntity<Obra> pesquisarObras(@RequestParam String titulo) {
-        Obra resultado = semanticScholarAPIService.gerarObraPorTitulo(titulo);
-        if (resultado != null) {
-            return ResponseEntity.ok(resultado);
+    public ResponseEntity<?> pesquisarObras(@RequestParam String titulo) {
+        List<Obra> resultados = semanticScholarAPIService.gerarObraPorTitulo(titulo);
+        if (resultados != null && !resultados.isEmpty()) {
+            return ResponseEntity.ok(resultados); // Return the list of Obra objects
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum resultado encontrado para o título especificado.");
     }
+    
 
     @PostMapping("/salvar")
     @ResponseBody
