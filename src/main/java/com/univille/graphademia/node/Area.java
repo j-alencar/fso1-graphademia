@@ -16,6 +16,8 @@ public class Area {
     @Relationship(type = "ABRANGE", direction = Relationship.Direction.OUTGOING)
     private List<Obra> obras;    
 
+    public Area() {}
+
     public Area(String nomeArea) {
         this.nomeArea = nomeArea;
     }

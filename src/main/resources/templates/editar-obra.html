@@ -39,9 +39,12 @@
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="button" class="btn btn-warning" id="autoPopulateBtn" th:data-obra-id="${obra.id}">AutoPopulate</button>
                 <a th:href="@{/obras/visualizar}" class="btn btn-secondary">Cancelar</a>
-            </div>
+            </div>            
         </form>
     </div>
+
+    <script src="/js/autoPopObra.js"></script> 
 </body>
 </html>

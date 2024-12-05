@@ -74,14 +74,13 @@ public class AutorController {
         }
     }
 
-    @GetMapping("/pesquisar-autores")
+    @GetMapping("/pesquisar-autor")
     public String exibirPagPesquisa() {
-        return "pesquisar-autores";
+        return "pesquisar-autor";
     }
-
-    @GetMapping("/autores/pesquisar-autores/resultados")
+    @GetMapping("/pesquisar-autor/resultados")
     @ResponseBody
-    public ResponseEntity<?> pesquisarAutores(@RequestParam String nome) {
+    public ResponseEntity<?> pesquisarAutores(@RequestParam("name") String nome) {
         List<Autor> resultados = semanticScholarAPIService.gerarAutorPorNome(nome);
         if (resultados != null && !resultados.isEmpty()) {
             return ResponseEntity.ok(resultados);
@@ -89,47 +88,19 @@ public class AutorController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum autor encontrado para o nome especificado.");
     }
 
-    @PostMapping("/autores/salvar")
+    @PostMapping("/salvar")
     @ResponseBody
-    public ResponseEntity<?> salvarAutorPesquisado(@RequestBody Autor autor) {
-    if (autor == null || autor.getAuthorId() == null || autor.getName() == null) {
-        return ResponseEntity.badRequest().body("Dados inválidos: 'authorId' e 'name' são obrigatórios.");
-    }
+    public ResponseEntity<?> salvarAutor(@RequestBody Autor autor) {
+        if (autor == null || autor.getAuthorId() == null || autor.getName() == null) {
+            return ResponseEntity.badRequest().body("Dados inválidos.");
+        }
     
-    try {
-        // Save the Autor object
-        Autor salvo = autorService.salvarAutor(autor); // Assume this service method exists
-        return ResponseEntity.ok().body("{\"status\": \"ok\"}"); // Success message
-        } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"status\": \"error\", \"message\": \"" + e.getMessage() + "\"}");
-        }
-    }
-
-
-
-    @PostMapping("/edit/{id}/autopopular")
-    public String autoPopularCamposAutor(@PathVariable Long id, Model model) {
-        Autor autor = autorService.buscarAutorPorId(id);
-        if (autor == null) {
-            return "redirect:/autores/visualizar";
-        }
         try {
-            List<Autor> detalhesPopulados = SemanticScholarAPIService.gerarDetalhesMultiplosAutores(List.of(autor));
-            if (detalhesPopulados != null && !detalhesPopulados.isEmpty()) {
-                Autor populado = detalhesPopulados.get(0);
-                autor.setName(populado.getName());
-                autor.setHindex(populado.getHindex());
-                autor.setDblp(populado.getDblp());
-                autor.setOrcid(populado.getOrcid());
-                autorService.atualizarAutor(id, autor);
-            } else {
-                logger.warn("Nenhum detalhe encontrado para o autor de ID {}", id);
-            }
+            Autor salvo = autorService.salvarAutor(autor);
+            return ResponseEntity.ok().body("{\"status\": \"ok\"}"); 
         } catch (Exception e) {
-            logger.error("Erro durante autopopulação de campos do autor de ID {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"status\": \"error\", \"message\": \"" + e.getMessage() + "\"}");
         }
-
-        return "redirect:/autores/edit/" + id;
     }
     
 };

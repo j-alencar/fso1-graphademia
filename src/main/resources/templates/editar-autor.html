@@ -28,16 +28,9 @@
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Salvar</button>
                 <a th:href="@{/autores/visualizar}" class="btn btn-secondary">Cancelar</a>
-                <button type="button" class="btn btn-info" onclick="autoPopular()">Auto Popular</button>
             </div>
         </form>
-        <form th:action="@{/autores/edit/{id}/autopopular(id=${autor.id})}" method="post" id="form-auto-pop"></form>
     </div>
-    <script>
-        function autoPopular() {
-            document.getElementById('form-auto-pop').submit();
-        }
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

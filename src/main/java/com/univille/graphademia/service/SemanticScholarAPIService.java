@@ -33,7 +33,7 @@ public class SemanticScholarAPIService {
     public static String msgMaxRetries = "Retries chegaram ao máximo. Retornando null.";
     public static String sufixoCamposObra = "fields=title,authors,references,openAccessPdf,externalIds,year,publicationDate,publicationVenue,publicationTypes,tldr,citationCount,fieldsOfStudy";
     public static String sufixoCamposObraRecomendada = "?fields=title,authors,openAccessPdf,externalIds,year,publicationDate,publicationVenue,publicationTypes,citationCount,fieldsOfStudy";    
-    public static String sufixoCamposAutor = "?fields=name,papers,externalIds,hIndex";
+    public static String sufixoCamposAutor = "&fields=name,papers,externalIds,hIndex";
     
     private static JsonElement buscarRespostaJson(String urlString, String metodo, String payload) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
@@ -193,12 +193,14 @@ public class SemanticScholarAPIService {
     
         if (respostaJson.has("fieldsOfStudy") && respostaJson.get("fieldsOfStudy").isJsonArray()) {
             List<Area> areas = new ArrayList<>();
+        
             for (JsonElement reference : respostaJson.getAsJsonArray("fieldsOfStudy")) {
-                String area = reference.getAsString();
-                areas.add(new Area(area));
+                String areaName = reference.getAsString();
+                areas.add(new Area(areaName)); 
             }
+        
             obra.setAreas(areas);
-        }
+        }        
     
         return obra;
     };
@@ -247,6 +249,24 @@ public class SemanticScholarAPIService {
         System.out.println(msgMaxRetries);
         return null;
     };
+
+    public static Obra atualizarObraPorId(Obra obra, String id) {
+        String urlBase = "https://api.semanticscholar.org/graph/v1/paper/";
+    
+        while (retryCount < maxRetries) {
+            try {
+                JsonObject respostaJson = buscarRespostaJson(urlBase + id + "?" + sufixoCamposObra, "GET", null).getAsJsonObject();
+                obra = deserializarJsonObra(obra, respostaJson);
+                obra.gerarObrasDeObras(obra.getReferencias());
+                return obra;
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                retryCount++;
+            }
+        }
+        System.out.println(msgMaxRetries);
+        return obra;
+    }
 
     public static List<Obra> gerarDetalhesMultiplasObras(List<Obra> listaObras) {
         String urlBase = "https://api.semanticscholar.org/graph/v1/paper/batch";        
@@ -335,6 +355,7 @@ public class SemanticScholarAPIService {
         while (retryCount < maxRetries) {
             try {
                 String encodedNome = URLEncoder.encode(nome, StandardCharsets.UTF_8.toString());
+                var foo = urlBase + encodedNome + sufixoCamposAutor;
                 JsonObject respostaJson = buscarRespostaJson(urlBase + encodedNome + sufixoCamposAutor, "GET", null).getAsJsonObject();
                 List<Autor> autores = deserializarJsonAutores(respostaJson);
                 return autores;
