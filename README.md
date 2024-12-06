@@ -15,4 +15,4 @@
 - Utilize uma ferramenta como o Neo4j Desktop, por exemplo, para criar seu banco;
 - Edite o arquivo application.properties de acordo com as suas credenciais;
 - Se necessário, compile o pacote. Ou apenas rode o Main GraphademiaApplicaton.
-- [Diagrama UML aqui](https://raw.githubusercontent.com/j-alencar/fso1-graphademia/refs/heads/master/uml.png?token=GHSAT0AAAAAACWQJ4WHE5YQIJVWIKU4TL5EZYJXNXA)
+- [Diagrama UML aqui](https://raw.githubusercontent.com/j-alencar/fso1-graphademia/refs/heads/master/uml.png?token=GHSAT0AAAAAACV52LKFT5NOS7FFCTMNXIX2Z2SKBLQ)
